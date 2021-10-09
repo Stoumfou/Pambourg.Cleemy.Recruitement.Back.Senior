@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Pambourg.Cleemy.Recruitement.Back.Senior.Data;
 using Pambourg.Cleemy.Recruitement.Back.Senior.Ioc.Registration;
 
 namespace Pambourg.Cleemy.Recruitement.Back.Senior
@@ -21,6 +23,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<CleemyContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
             services.RegisterServices(Configuration);
         }

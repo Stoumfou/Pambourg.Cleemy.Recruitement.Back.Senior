@@ -4,8 +4,8 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Models.Entities
 {
     public partial class Expenditure
     {
-        public int Id { get; set; }
-        public int UserId { get; set; }
+        public int ID { get; set; }
+        public int UserID { get; set; }
         public DateTime DateCreated { get; set; }
         public string Nature { get; set; }
         public int Amount { get; set; }
