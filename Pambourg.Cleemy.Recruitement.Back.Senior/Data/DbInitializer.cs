@@ -15,16 +15,43 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Data
                 return; // DB has been seeded
             }
 
-            var users = new User[]
+            ExpenseType[] expenseTypes = new ExpenseType[]
             {
-                new User("Stark","Anthony","Dollar américain"),
-                new User("Romanova","Natasha","Rouble russe")
+                new ExpenseType("Restaurant"),
+                new ExpenseType("Hotel"),
+                new ExpenseType("Misc")
             };
+            context.ExpenseTypes.AddRange(expenseTypes);
 
-            foreach (User user in users)
+            Currency[] currencies = new Currency[]
             {
-                context.Users.Add(user);
-            }
+                new Currency("USD","Dollar américain"),
+                new Currency("RUB" ,"Rouble russe")
+            };
+            context.Currencies.AddRange(currencies);
+
+            User[] users = new User[]
+            {
+                new User("Stark","Anthony",1),
+                new User("Romanova","Natasha",2)
+            };
+            context.Users.AddRange(users);
+            await context.SaveChangesAsync();
+
+
+            Expense[] expenses = new Expense[]
+            {
+                new Expense()
+                {
+                    Amount = 123,
+                    Comment = "test",
+                    CurrencyID = 1,
+                    DateCreated = System.DateTime.Now,
+                    ExpenseTypeID = 1,
+                    UserID = 1
+                }
+            };
+            context.Expenses.AddRange(expenses);
 
             await context.SaveChangesAsync();
         }

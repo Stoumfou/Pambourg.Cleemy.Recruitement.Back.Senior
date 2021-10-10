@@ -2,16 +2,18 @@
 {
     public partial class User
     {
-        public User(string lastName, string firstName, string currency)
+        public User(string lastName, string firstName, int currencyID)
         {
-            if (!string.IsNullOrWhiteSpace(lastName)
-                && !string.IsNullOrWhiteSpace(firstName)
-                && !string.IsNullOrWhiteSpace(currency))
+            if (string.IsNullOrWhiteSpace(lastName)
+                || string.IsNullOrWhiteSpace(firstName)
+                || currencyID == 0)
             {
-                LastName = lastName;
-                FirstName = firstName;
-                Currency = currency;
+                return;
             }
+
+            LastName = lastName;
+            FirstName = firstName;
+            CurrencyID = currencyID;
         }
     }
 }

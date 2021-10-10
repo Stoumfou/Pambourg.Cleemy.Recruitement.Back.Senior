@@ -9,7 +9,6 @@ using Pambourg.Cleemy.Recruitement.Back.Senior.Ioc.Registration;
 
 namespace Pambourg.Cleemy.Recruitement.Back.Senior
 {
-    //Server=localhost\SQLEXPRESS;Database=master;Trusted_Connection=True;
 
     public class Startup
     {
@@ -25,7 +24,8 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior
         {
             services.AddDbContext<CleemyContext>(o => o.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddControllers();
-            services.RegisterServices(Configuration);
+            services.RegisterRepositories();
+            services.RegisterServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
