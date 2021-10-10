@@ -6,7 +6,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services.Interfaces
 {
     public interface IExpenseService
     {
-        Task<int> CreateAsync(ExpenseDTO expenseDTO);
+        Task CreateAsync(CreateExpenseDTO expenseDTO);
         Task<IEnumerable<ExpenseDTO>> GetExpenseByUserIdAsync(int userId);
     }
 }

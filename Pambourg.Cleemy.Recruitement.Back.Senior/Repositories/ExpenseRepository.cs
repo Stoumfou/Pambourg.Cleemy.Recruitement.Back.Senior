@@ -18,7 +18,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Repositories
             _cleemyContext = cleemyContext;
         }
 
-        public async Task<IEnumerable<Expense>> FindAsync(int userId)
+        public async Task<IEnumerable<Expense>> FindAsyncByUserId(int userId)
         {
             if (userId == 0)
             {
@@ -34,7 +34,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Repositories
                 .ToListAsync();
         }
 
-        public async Task<int> InsertAsync(Expense expense)
+        public async Task InsertAsync(Expense expense)
         {
             if (expense == null)
             {
@@ -43,8 +43,6 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Repositories
 
             await _cleemyContext.Expenses.AddAsync(expense);
             await _cleemyContext.SaveChangesAsync();
-
-            return expense.ID;
         }
     }
 }

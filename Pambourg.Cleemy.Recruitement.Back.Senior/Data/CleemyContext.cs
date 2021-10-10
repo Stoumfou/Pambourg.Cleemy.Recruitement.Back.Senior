@@ -13,7 +13,6 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Data
         public DbSet<Expense> Expenses { get; set; }
         public DbSet<ExpenseType> ExpenseTypes { get; set; }
         public DbSet<Currency> Currencies { get; set; }
-
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -44,9 +43,6 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Data
             {
                 entity.ToTable(nameof(Expense));
                 entity.HasKey(e => e.ID);
-
-                entity.Property(e => e.DateCreated)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Comment)
                  .IsRequired();

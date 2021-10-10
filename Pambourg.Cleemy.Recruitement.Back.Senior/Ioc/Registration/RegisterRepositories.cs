@@ -9,6 +9,9 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Ioc.Registration
         public static void RegisterRepositories(this IServiceCollection services)
         {
             services.AddScoped<IExpenseRepository, ExpenseRepository>();
+            services.AddScoped<IExpenseTypeRepository, ExpenseTypeRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICurrencyRepository, CurrencyRepository>();
         }
     }
 }

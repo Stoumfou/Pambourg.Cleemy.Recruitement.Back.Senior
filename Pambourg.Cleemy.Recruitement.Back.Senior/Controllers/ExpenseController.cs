@@ -36,7 +36,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Controllers
             try
             {
                 IEnumerable<ExpenseDTO> expenses = await _expenseService.GetExpenseByUserIdAsync(userId);
-                if (expenses.Any())
+                if (!expenses.Any())
                 {
                     return NotFound(userId);
                 }
@@ -52,15 +52,22 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> CreateAsync(ExpenseDTO expenseModel)
+        public async Task<IActionResult> CreateAsync(CreateExpenseDTO createExpenseDTO)
         {
-            if (expenseModel == null)
+            if (createExpenseDTO == null)
             {
-                return BadRequest();
+                return BadRequest(createExpenseDTO);
             }
 
-            int expenseCreatedId = await _expenseService.CreateAsync(expenseModel);
-            return Ok(expenseCreatedId);
+            try
+            {
+                await _expenseService.CreateAsync(createExpenseDTO);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest(createExpenseDTO);
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Pambourg.Cleemy.Recruitement.Back.Senior.Models.Entities;
+using System;
 
 namespace Pambourg.Cleemy.Recruitement.Back.Senior.Models.DTO
 {
@@ -10,7 +11,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Models.DTO
             FullName = expense.User.FirstName + " " + expense.User.LastName;
             Type = expense.Type.Label;
             Currency = expense.Currency.Label;
-            DateCreated = expense.DateCreated.ToString("G");
+            DateCreated = expense.DateCreated;
             Amount = expense.Amount;
             Comment = expense.Comment;
         }
@@ -19,7 +20,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Models.DTO
         public string FullName { get; set; }
         public string Type { get; set; }
         public string Currency { get; set; }
-        public string DateCreated { get; set; }
+        public DateTime DateCreated { get; set; }
         public decimal Amount { get; set; }
         public string Comment { get; set; }
     }

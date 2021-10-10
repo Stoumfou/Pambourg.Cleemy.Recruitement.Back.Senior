@@ -46,7 +46,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Data
                     Amount = 123,
                     Comment = "test",
                     CurrencyID = 1,
-                    DateCreated = System.DateTime.Now,
+                    DateCreated = System.DateTime.Now.AddMonths(-1),
                     ExpenseTypeID = 1,
                     UserID = 1
                 }

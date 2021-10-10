@@ -1,12 +1,10 @@
 ﻿using Pambourg.Cleemy.Recruitement.Back.Senior.Models.Entities;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Pambourg.Cleemy.Recruitement.Back.Senior.Repositories.Interfaces
 {
-    public interface IExpenseRepository
+    public interface ICurrencyRepository
     {
-        Task<IEnumerable<Expense>> FindAsyncByUserId(int userId);
-        Task InsertAsync(Expense expense);
+        Task<Currency> FindAsyncByCode(string currencyCode);
     }
 }
