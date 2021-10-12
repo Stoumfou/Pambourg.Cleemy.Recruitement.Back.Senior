@@ -50,43 +50,48 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services
                 throw new ArgumentNullException(nameof(createExpenseDTO));
             }
 
-            if (createExpenseDTO.DateCreated > DateTime.Now && createExpenseDTO.DateCreated < DateTime.Now.AddMonths(ExpenseConstant.MaxExpenseDate))
+            if (createExpenseDTO.DateCreated > DateTime.Now)
             {
-                throw new Exception(); // TODO better exception
+                throw new Exception($"{nameof(createExpenseDTO.DateCreated)} : {createExpenseDTO.DateCreated}, can not be in the futur"); // TODO better exception type
+            }
+
+            if (createExpenseDTO.DateCreated < DateTime.Now.AddMonths(ExpenseConstant.MaxExpenseDate))
+            {
+                throw new Exception($"{nameof(createExpenseDTO.DateCreated)} : {createExpenseDTO.DateCreated}, can not be older than three months"); // TODO better exception type
             }
 
             if (string.IsNullOrWhiteSpace(createExpenseDTO.Comment))
             {
-                throw new Exception(); // TODO better exception
+                throw new Exception($"{nameof(createExpenseDTO.Comment)} is required"); // TODO better exception type
             }
 
             ExpenseType expenseType = await _expenseTypeRepository.FindAsyncByLabel(createExpenseDTO.Type);
             if (expenseType == null)
             {
-                throw new NullReferenceException(nameof(expenseType));
+                throw new NullReferenceException($"{nameof(createExpenseDTO.Type)} : {createExpenseDTO.Type}, could not be find");
             }
 
             User user = await _userRepository.FindAsyncById(createExpenseDTO.UserID);
             if (user == null)
             {
-                throw new NullReferenceException(nameof(user));
+                throw new NullReferenceException($"{nameof(createExpenseDTO.UserID)} : {createExpenseDTO.UserID}, could not be find");
             }
 
             Currency currency = await _currencyRepository.FindAsyncByCode(createExpenseDTO.CurrencyCode);
             if (currency == null)
             {
-                throw new NullReferenceException(nameof(currency));
+                throw new NullReferenceException($"{nameof(createExpenseDTO.CurrencyCode)} : {createExpenseDTO.CurrencyCode}, could not be find");
             }
 
             if (user.Currency.ID != currency.ID)
             {
-                throw new Exception(); // TODO better exception
+                throw new Exception($"{nameof(createExpenseDTO.CurrencyCode)} {createExpenseDTO.CurrencyCode}, must be the same as the currency of the userID {user.ID} : {user.Currency.Code}"); // TODO better exception type
             }
 
             if (user.Expenses.Where(e => e.DateCreated == createExpenseDTO.DateCreated // TODO See with product for 'same date' == day or dateTime?
                 && e.Amount == e.Amount && e.Currency.ID == currency.ID).Any())
             {
-                throw new Exception(); // TODO better exception
+                throw new Exception($"An expense already exist with this date({createExpenseDTO.DateCreated}), amount({createExpenseDTO.Amount}) and currency({createExpenseDTO.CurrencyCode})"); // TODO better exception type
             }
 
 

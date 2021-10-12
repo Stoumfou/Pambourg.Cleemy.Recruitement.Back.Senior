@@ -2,6 +2,10 @@
 {
     public partial class Currency
     {
+        public Currency()
+        {
+        }
+
         public Currency(string code, string label)
         {
             if (string.IsNullOrWhiteSpace(code)

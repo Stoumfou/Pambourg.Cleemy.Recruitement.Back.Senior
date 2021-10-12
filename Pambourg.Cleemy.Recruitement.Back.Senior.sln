@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31727.386
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pambourg.Cleemy.Recruitement.Back.Senior", "Pambourg.Cleemy.Recruitement.Back.Senior\Pambourg.Cleemy.Recruitement.Back.Senior.csproj", "{9F912FD7-EC72-4ECD-8C4D-9ECD342EF69C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pambourg.Cleemy.Recruitement.Back.Senior", "Pambourg.Cleemy.Recruitement.Back.Senior\Pambourg.Cleemy.Recruitement.Back.Senior.csproj", "{9F912FD7-EC72-4ECD-8C4D-9ECD342EF69C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{9DB23608-ABA3-411C-9A15-BA364DFA5519}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{9F912FD7-EC72-4ECD-8C4D-9ECD342EF69C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F912FD7-EC72-4ECD-8C4D-9ECD342EF69C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F912FD7-EC72-4ECD-8C4D-9ECD342EF69C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9DB23608-ABA3-411C-9A15-BA364DFA5519}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9DB23608-ABA3-411C-9A15-BA364DFA5519}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9DB23608-ABA3-411C-9A15-BA364DFA5519}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9DB23608-ABA3-411C-9A15-BA364DFA5519}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

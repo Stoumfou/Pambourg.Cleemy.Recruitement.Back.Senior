@@ -2,6 +2,10 @@
 {
     public partial class ExpenseType
     {
+        public ExpenseType()
+        {
+        }
+
         public ExpenseType(string label)
         {
             if (!string.IsNullOrWhiteSpace(label))

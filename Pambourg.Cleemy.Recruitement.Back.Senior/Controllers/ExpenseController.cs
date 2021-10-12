@@ -64,9 +64,9 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Controllers
                 await _expenseService.CreateAsync(createExpenseDTO);
                 return Ok();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest(createExpenseDTO);
+                return BadRequest(ex.Message);
             }
         }
     }

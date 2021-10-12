@@ -2,6 +2,10 @@
 {
     public partial class User
     {
+        public User()
+        {
+        }
+
         public User(string lastName, string firstName, int currencyID)
         {
             if (string.IsNullOrWhiteSpace(lastName)
