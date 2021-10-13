@@ -8,5 +8,6 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services.Interfaces
     {
         Task CreateAsync(CreateExpenseDTO expenseDTO);
         Task<IEnumerable<ExpenseDTO>> GetExpenseByUserIdAsync(int userId);
+        Task<IEnumerable<ExpenseDTO>> GetExpenseByUserIdAsync(int userId, string sortBy, string sortOrder);
     }
 }

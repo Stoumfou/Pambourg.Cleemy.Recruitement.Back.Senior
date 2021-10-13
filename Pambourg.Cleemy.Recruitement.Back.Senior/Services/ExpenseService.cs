@@ -44,27 +44,41 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services
             return expenses.Select(expense => new ExpenseDTO(expense)).ToList();
         }
 
+        public async Task<IEnumerable<ExpenseDTO>> GetExpenseByUserIdAsync(int userId, string sortBy, string sortOrder)
+        {
+            if (userId == 0)
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
+
+            if (string.IsNullOrWhiteSpace(sortBy) || string.IsNullOrWhiteSpace(sortOrder))
+            {
+                return await GetExpenseByUserIdAsync(userId);
+            }
+
+            if (!ExpenseConstant.SortBy.Contains(sortBy.ToLowerInvariant()))
+            {
+                throw new ArgumentOutOfRangeException(nameof(sortBy));
+            }
+
+            if (!ExpenseConstant.SortOrder.Contains(sortOrder.ToLowerInvariant()))
+            {
+                throw new ArgumentOutOfRangeException(nameof(sortOrder));
+            }
+
+            IEnumerable<Expense> expenses = await _expenseRepository.FindAsyncByUserId(userId, sortBy, sortOrder);
+            if (!expenses.Any())
+            {
+                return null;
+            }
+
+            return expenses.Select(expense => new ExpenseDTO(expense)).ToList();
+        }
+
         public async Task CreateAsync(CreateExpenseDTO createExpenseDTO)
         {
-            if (createExpenseDTO == null)
-            {
-                throw new ArgumentNullException(nameof(createExpenseDTO));
-            }
 
-            if (createExpenseDTO.DateCreated > DateTime.Now)
-            {
-                throw new DateInFutureException($"{nameof(createExpenseDTO.DateCreated)} : {createExpenseDTO.DateCreated}, can not be in the futur");
-            }
-
-            if (createExpenseDTO.DateCreated < DateTime.Now.AddMonths(ExpenseConstant.MaxExpenseDate))
-            {
-                throw new DateTooOldException($"{nameof(createExpenseDTO.DateCreated)} : {createExpenseDTO.DateCreated}, can not be older than three months");
-            }
-
-            if (string.IsNullOrWhiteSpace(createExpenseDTO.Comment))
-            {
-                throw new CommentEmptyException($"{nameof(createExpenseDTO.Comment)} is required");
-            }
+            ValidateCreateExpenseDTO(createExpenseDTO);
 
             ExpenseType expenseType = await _expenseTypeRepository.FindAsyncByLabel(createExpenseDTO.Type);
             if (expenseType == null)
@@ -90,7 +104,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services
             }
 
             if (user.Expenses.Where(e => e.DateCreated == createExpenseDTO.DateCreated // TODO See with product for 'same date' == day or dateTime?
-                && e.Amount == e.Amount && e.Currency.ID == currency.ID).Any())
+                && e.Amount == createExpenseDTO.Amount && e.Currency.ID == currency.ID).Any())
             {
                 throw new AlreadyExistException($"An expense already exist with this date({createExpenseDTO.DateCreated}), amount({createExpenseDTO.Amount}) and currency({createExpenseDTO.CurrencyCode})");
             }
@@ -98,6 +112,29 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services
 
             Expense expense = new Expense(user.ID, expenseType.ID, user.CurrencyID, createExpenseDTO.DateCreated, createExpenseDTO.Amount, createExpenseDTO.Comment);
             await _expenseRepository.InsertAsync(expense);
+        }
+
+        private void ValidateCreateExpenseDTO(CreateExpenseDTO createExpenseDTO)
+        {
+            if (createExpenseDTO == null)
+            {
+                throw new ArgumentNullException(nameof(createExpenseDTO));
+            }
+
+            if (createExpenseDTO.DateCreated > DateTime.Now)
+            {
+                throw new DateInFutureException($"{nameof(createExpenseDTO.DateCreated)} : {createExpenseDTO.DateCreated}, can not be in the futur");
+            }
+
+            if (createExpenseDTO.DateCreated < DateTime.Now.AddMonths(ExpenseConstant.MaxExpenseDate))
+            {
+                throw new DateTooOldException($"{nameof(createExpenseDTO.DateCreated)} : {createExpenseDTO.DateCreated}, can not be older than three months");
+            }
+
+            if (string.IsNullOrWhiteSpace(createExpenseDTO.Comment))
+            {
+                throw new CommentEmptyException($"{nameof(createExpenseDTO.Comment)} is required");
+            }
         }
     }
 }

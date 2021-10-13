@@ -2,6 +2,7 @@
 using Pambourg.Cleemy.Recruitement.Back.Senior.Data;
 using Pambourg.Cleemy.Recruitement.Back.Senior.Models.Entities;
 using Pambourg.Cleemy.Recruitement.Back.Senior.Repositories.Interfaces;
+using Pambourg.Cleemy.Recruitement.Back.Senior.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,8 +31,48 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Repositories
                 .Include(e => e.Type)
                 .Include(e => e.Currency)
                 .Where(e => e.UserID == userId)
-                .OrderByDescending(e => e.DateCreated)
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Expense>> FindAsyncByUserId(int userId, string sortBy, string sortOrder)
+        {
+            if (userId == 0)
+            {
+                throw new ArgumentNullException(nameof(userId));
+            }
+
+            if (string.IsNullOrWhiteSpace(sortBy) || string.IsNullOrWhiteSpace(sortOrder))
+            {
+                return await FindAsyncByUserId(userId);
+            }
+
+            if (!ExpenseConstant.SortBy.Contains(sortBy.ToLowerInvariant()))
+            {
+                throw new ArgumentOutOfRangeException(nameof(sortBy));
+            }
+
+            if (!ExpenseConstant.SortOrder.Contains(sortOrder.ToLowerInvariant()))
+            {
+                throw new ArgumentOutOfRangeException(nameof(sortOrder));
+            }
+
+            IQueryable<Expense> query = _cleemyContext.Expenses
+                .Include(e => e.User)
+                .Include(e => e.Type)
+                .Include(e => e.Currency)
+                .Where(e => e.UserID == userId);
+
+            if (sortOrder == "asc")
+            {
+                query.OrderBy(e => sortOrder);
+            }
+            else
+            {
+                query.OrderByDescending(e => sortOrder);
+            }
+
+
+            return await query.ToListAsync();
         }
 
         public async Task InsertAsync(Expense expense)
