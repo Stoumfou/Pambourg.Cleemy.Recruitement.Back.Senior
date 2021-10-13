@@ -1,4 +1,5 @@
 using Moq;
+using Pambourg.Cleemy.Recruitement.Back.Senior.Exceptions.Expense;
 using Pambourg.Cleemy.Recruitement.Back.Senior.Models.DTO;
 using Pambourg.Cleemy.Recruitement.Back.Senior.Models.Entities;
 using Pambourg.Cleemy.Recruitement.Back.Senior.Repositories.Interfaces;
@@ -86,7 +87,7 @@ namespace UnitTests
             ExpenseService expenseService = new ExpenseService(expenseRepoMock.Object, userRepoMock.Object, currencyRepoMock.Object, expenseTypeRepoMock.Object);
 
             /// Act, Assert
-            await Assert.ThrowsAsync<Exception>(() => expenseService.CreateAsync(createExpenseDTO));
+            await Assert.ThrowsAsync<DateTooOldException>(() => expenseService.CreateAsync(createExpenseDTO));
         }
 
         [Fact]
@@ -123,7 +124,7 @@ namespace UnitTests
             ExpenseService expenseService = new ExpenseService(expenseRepoMock.Object, userRepoMock.Object, currencyRepoMock.Object, expenseTypeRepoMock.Object);
 
             /// Act, Assert
-            await Assert.ThrowsAsync<Exception>(() => expenseService.CreateAsync(createExpenseDTO));
+            await Assert.ThrowsAsync<DateInFutureException>(() => expenseService.CreateAsync(createExpenseDTO));
         }
 
         [Fact]
@@ -160,7 +161,7 @@ namespace UnitTests
             ExpenseService expenseService = new ExpenseService(expenseRepoMock.Object, userRepoMock.Object, currencyRepoMock.Object, expenseTypeRepoMock.Object);
 
             /// Act, Assert
-            await Assert.ThrowsAsync<Exception>(() => expenseService.CreateAsync(createExpenseDTO));
+            await Assert.ThrowsAsync<CommentEmptyException>(() => expenseService.CreateAsync(createExpenseDTO));
         }
 
         [Fact]
@@ -197,7 +198,7 @@ namespace UnitTests
             ExpenseService expenseService = new ExpenseService(expenseRepoMock.Object, userRepoMock.Object, currencyRepoMock.Object, expenseTypeRepoMock.Object);
 
             /// Act, Assert
-            await Assert.ThrowsAsync<Exception>(() => expenseService.CreateAsync(createExpenseDTO));
+            await Assert.ThrowsAsync<InvalidCurrencyException>(() => expenseService.CreateAsync(createExpenseDTO));
         }
 
         [Fact]
@@ -241,7 +242,7 @@ namespace UnitTests
             ExpenseService expenseService = new ExpenseService(expenseRepoMock.Object, userRepoMock.Object, currencyRepoMock.Object, expenseTypeRepoMock.Object);
 
             /// Act, Assert
-            await Assert.ThrowsAsync<Exception>(() => expenseService.CreateAsync(createExpenseDTO));
+            await Assert.ThrowsAsync<AlreadyExistException>(() => expenseService.CreateAsync(createExpenseDTO));
         }
     }
 }

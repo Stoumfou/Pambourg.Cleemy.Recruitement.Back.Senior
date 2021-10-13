@@ -1,4 +1,5 @@
-﻿using Pambourg.Cleemy.Recruitement.Back.Senior.Models.DTO;
+﻿using Pambourg.Cleemy.Recruitement.Back.Senior.Exceptions.Expense;
+using Pambourg.Cleemy.Recruitement.Back.Senior.Models.DTO;
 using Pambourg.Cleemy.Recruitement.Back.Senior.Models.Entities;
 using Pambourg.Cleemy.Recruitement.Back.Senior.Repositories.Interfaces;
 using Pambourg.Cleemy.Recruitement.Back.Senior.Services.Interfaces;
@@ -52,17 +53,17 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services
 
             if (createExpenseDTO.DateCreated > DateTime.Now)
             {
-                throw new Exception($"{nameof(createExpenseDTO.DateCreated)} : {createExpenseDTO.DateCreated}, can not be in the futur"); // TODO better exception type
+                throw new DateInFutureException($"{nameof(createExpenseDTO.DateCreated)} : {createExpenseDTO.DateCreated}, can not be in the futur");
             }
 
             if (createExpenseDTO.DateCreated < DateTime.Now.AddMonths(ExpenseConstant.MaxExpenseDate))
             {
-                throw new Exception($"{nameof(createExpenseDTO.DateCreated)} : {createExpenseDTO.DateCreated}, can not be older than three months"); // TODO better exception type
+                throw new DateTooOldException($"{nameof(createExpenseDTO.DateCreated)} : {createExpenseDTO.DateCreated}, can not be older than three months");
             }
 
             if (string.IsNullOrWhiteSpace(createExpenseDTO.Comment))
             {
-                throw new Exception($"{nameof(createExpenseDTO.Comment)} is required"); // TODO better exception type
+                throw new CommentEmptyException($"{nameof(createExpenseDTO.Comment)} is required");
             }
 
             ExpenseType expenseType = await _expenseTypeRepository.FindAsyncByLabel(createExpenseDTO.Type);
@@ -85,13 +86,13 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services
 
             if (user.Currency.ID != currency.ID)
             {
-                throw new Exception($"{nameof(createExpenseDTO.CurrencyCode)} {createExpenseDTO.CurrencyCode}, must be the same as the currency of the userID {user.ID} : {user.Currency.Code}"); // TODO better exception type
+                throw new InvalidCurrencyException($"{nameof(createExpenseDTO.CurrencyCode)} {createExpenseDTO.CurrencyCode}, must be the same as the currency of the userID {user.ID} : {user.Currency.Code}");
             }
 
             if (user.Expenses.Where(e => e.DateCreated == createExpenseDTO.DateCreated // TODO See with product for 'same date' == day or dateTime?
                 && e.Amount == e.Amount && e.Currency.ID == currency.ID).Any())
             {
-                throw new Exception($"An expense already exist with this date({createExpenseDTO.DateCreated}), amount({createExpenseDTO.Amount}) and currency({createExpenseDTO.CurrencyCode})"); // TODO better exception type
+                throw new AlreadyExistException($"An expense already exist with this date({createExpenseDTO.DateCreated}), amount({createExpenseDTO.Amount}) and currency({createExpenseDTO.CurrencyCode})");
             }
 
 
