@@ -41,7 +41,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Controllers
                 return BadRequest(userId);
             }
 
-            if (!string.IsNullOrWhiteSpace(sortBy) && !ExpenseConstant.SortBy.Contains(sortBy.ToLowerInvariant()))
+            if (!string.IsNullOrWhiteSpace(sortBy) && !ExpenseConstant.SortBy.Contains(sortBy))
             {
                 return BadRequest(sortBy);
             }
@@ -60,7 +60,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Controllers
 
                 return Ok(expenses);
             }
-            catch (ArgumentNullException)
+            catch (Exception)
             {
                 return BadRequest(userId);
             }
@@ -73,26 +73,29 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Controllers
         ///<param name="sortBy">optional</param>
         /// <param name="sortOrder">optional</param>
         /// <returns></returns>
-        [HttpGet("GetAll")]
+        [HttpGet("all")]
         [ProducesResponseType((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<ExpenseDTO>> GetAllAsync(int userId, string sortBy, string sortOrder)
+        public async Task<ActionResult<ExpenseDTO>> GetAllAsync(string sortBy, string sortOrder)
         {
+            if (!string.IsNullOrWhiteSpace(sortBy) && !ExpenseConstant.SortBy.Contains(sortBy))
+            {
+                return BadRequest(sortBy);
+            }
+            else if (!string.IsNullOrWhiteSpace(sortOrder) && !ExpenseConstant.SortOrder.Contains(sortOrder.ToLowerInvariant()))
+            {
+                return BadRequest(sortOrder);
+            }
 
             try
             {
-                IEnumerable<ExpenseDTO> expenses = await _expenseService.GetExpenseByUserIdAsync(userId);
-                if (!expenses.Any())
-                {
-                    return NotFound(userId);
-                }
-
+                IEnumerable<ExpenseDTO> expenses = await _expenseService.GetAllExpenseAsync(sortBy, sortOrder);
                 return Ok(expenses);
             }
-            catch (ArgumentNullException)
+            catch (Exception)
             {
-                return BadRequest(userId);
+                return BadRequest();
             }
         }
 

@@ -56,7 +56,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services
                 return await GetExpenseByUserIdAsync(userId);
             }
 
-            if (!ExpenseConstant.SortBy.Contains(sortBy.ToLowerInvariant()))
+            if (!ExpenseConstant.SortBy.Contains(sortBy))
             {
                 throw new ArgumentOutOfRangeException(nameof(sortBy));
             }
@@ -67,6 +67,43 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services
             }
 
             IEnumerable<Expense> expenses = await _expenseRepository.FindAsyncByUserId(userId, sortBy, sortOrder);
+            if (!expenses.Any())
+            {
+                return null;
+            }
+
+            return expenses.Select(expense => new ExpenseDTO(expense)).ToList();
+        }
+
+        public async Task<IEnumerable<ExpenseDTO>> GetAllExpenseAsync()
+        {
+            IEnumerable<Expense> expenses = await _expenseRepository.GetAllAsync();
+            if (!expenses.Any())
+            {
+                return null;
+            }
+
+            return expenses.Select(expense => new ExpenseDTO(expense)).ToList();
+        }
+
+        public async Task<IEnumerable<ExpenseDTO>> GetAllExpenseAsync(string sortBy, string sortOrder)
+        {
+            if (string.IsNullOrWhiteSpace(sortBy) || string.IsNullOrWhiteSpace(sortOrder))
+            {
+                return await GetAllExpenseAsync();
+            }
+
+            if (!ExpenseConstant.SortBy.Contains(sortBy))
+            {
+                throw new ArgumentOutOfRangeException(nameof(sortBy));
+            }
+
+            if (!ExpenseConstant.SortOrder.Contains(sortOrder.ToLowerInvariant()))
+            {
+                throw new ArgumentOutOfRangeException(nameof(sortOrder));
+            }
+
+            IEnumerable<Expense> expenses = await _expenseRepository.GetAllAsync(sortBy, sortOrder);
             if (!expenses.Any())
             {
                 return null;

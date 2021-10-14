@@ -46,7 +46,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Repositories
                 return await FindAsyncByUserId(userId);
             }
 
-            if (!ExpenseConstant.SortBy.Contains(sortBy.ToLowerInvariant()))
+            if (!ExpenseConstant.SortBy.Contains(sortBy))
             {
                 throw new ArgumentOutOfRangeException(nameof(sortBy));
             }
@@ -64,11 +64,55 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Repositories
 
             if (sortOrder == "asc")
             {
-                query.OrderBy(e => sortOrder);
+                query = query.OrderBy(e => EF.Property<object>(e, sortBy));
             }
             else
             {
-                query.OrderByDescending(e => sortOrder);
+                query = query.OrderByDescending(e => EF.Property<object>(e, sortBy));
+            }
+
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Expense>> GetAllAsync()
+        {
+            return await _cleemyContext.Expenses
+                .Include(e => e.User)
+                .Include(e => e.Type)
+                .Include(e => e.Currency)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Expense>> GetAllAsync(string sortBy, string sortOrder)
+        {
+            if (string.IsNullOrWhiteSpace(sortBy) || string.IsNullOrWhiteSpace(sortOrder))
+            {
+                return await GetAllAsync();
+            }
+
+            if (!ExpenseConstant.SortBy.Contains(sortBy))
+            {
+                throw new ArgumentOutOfRangeException(nameof(sortBy));
+            }
+
+            if (!ExpenseConstant.SortOrder.Contains(sortOrder.ToLowerInvariant()))
+            {
+                throw new ArgumentOutOfRangeException(nameof(sortOrder));
+            }
+
+            IQueryable<Expense> query = _cleemyContext.Expenses
+                .Include(e => e.User)
+                .Include(e => e.Type)
+                .Include(e => e.Currency);
+
+            if (sortOrder == "asc")
+            {
+                query = query.OrderBy(e => EF.Property<object>(e, sortBy));
+            }
+            else
+            {
+                query = query.OrderByDescending(e => EF.Property<object>(e, sortBy));
             }
 
 
