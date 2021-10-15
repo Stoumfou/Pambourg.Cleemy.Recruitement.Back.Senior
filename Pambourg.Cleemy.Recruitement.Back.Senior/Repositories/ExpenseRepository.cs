@@ -19,7 +19,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Repositories
             _cleemyContext = cleemyContext;
         }
 
-        public async Task<IEnumerable<Expense>> FindAsyncByUserId(int userId)
+        public async Task<IEnumerable<Expense>> FindByUserIdAsync(int userId)
         {
             if (userId == 0)
             {
@@ -34,7 +34,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Expense>> FindAsyncByUserId(int userId, string sortBy, string sortOrder)
+        public async Task<IEnumerable<Expense>> FindByUserIdAsync(int userId, string sortBy, string sortOrder)
         {
             if (userId == 0)
             {
@@ -43,7 +43,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Repositories
 
             if (string.IsNullOrWhiteSpace(sortBy) || string.IsNullOrWhiteSpace(sortOrder))
             {
-                return await FindAsyncByUserId(userId);
+                return await FindByUserIdAsync(userId);
             }
 
             if (!ExpenseConstant.SortBy.Contains(sortBy))

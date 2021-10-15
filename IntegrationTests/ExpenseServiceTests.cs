@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Pambourg.Cleemy.Recruitement.Back.Senior.UnitTests
+namespace IntegrationTests
 {
     public class ExpenseServiceTests
     {

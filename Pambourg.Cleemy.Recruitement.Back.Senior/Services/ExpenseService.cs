@@ -35,7 +35,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services
                 throw new ArgumentNullException(nameof(userId));
             }
 
-            IEnumerable<Expense> expenses = await _expenseRepository.FindAsyncByUserId(userId);
+            IEnumerable<Expense> expenses = await _expenseRepository.FindByUserIdAsync(userId);
             if (!expenses.Any())
             {
                 return null;
@@ -66,7 +66,7 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services
                 throw new ArgumentOutOfRangeException(nameof(sortOrder));
             }
 
-            IEnumerable<Expense> expenses = await _expenseRepository.FindAsyncByUserId(userId, sortBy, sortOrder);
+            IEnumerable<Expense> expenses = await _expenseRepository.FindByUserIdAsync(userId, sortBy, sortOrder);
             if (!expenses.Any())
             {
                 return null;
@@ -114,25 +114,29 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services
 
         public async Task CreateAsync(CreateExpenseDTO createExpenseDTO)
         {
+            if (createExpenseDTO == null)
+            {
+                throw new ArgumentNullException(nameof(createExpenseDTO));
+            }
 
-            ValidateCreateExpenseDTO(createExpenseDTO);
+            createExpenseDTO.ValidateCreateExpenseDTO();
 
             ExpenseType expenseType = await _expenseTypeRepository.FindAsyncByLabel(createExpenseDTO.Type);
             if (expenseType == null)
             {
-                throw new NullReferenceException($"{nameof(createExpenseDTO.Type)} : {createExpenseDTO.Type}, could not be find");
+                throw new NullReferenceException($"{nameof(createExpenseDTO.Type)} : {createExpenseDTO.Type}, could not be found");
             }
 
             User user = await _userRepository.FindAsyncById(createExpenseDTO.UserID);
             if (user == null)
             {
-                throw new NullReferenceException($"{nameof(createExpenseDTO.UserID)} : {createExpenseDTO.UserID}, could not be find");
+                throw new NullReferenceException($"{nameof(createExpenseDTO.UserID)} : {createExpenseDTO.UserID}, could not be found");
             }
 
             Currency currency = await _currencyRepository.FindAsyncByCode(createExpenseDTO.CurrencyCode);
             if (currency == null)
             {
-                throw new NullReferenceException($"{nameof(createExpenseDTO.CurrencyCode)} : {createExpenseDTO.CurrencyCode}, could not be find");
+                throw new NullReferenceException($"{nameof(createExpenseDTO.CurrencyCode)} : {createExpenseDTO.CurrencyCode}, could not be found");
             }
 
             if (user.Currency.ID != currency.ID)
@@ -149,29 +153,6 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services
 
             Expense expense = new Expense(user.ID, expenseType.ID, user.CurrencyID, createExpenseDTO.DateCreated, createExpenseDTO.Amount, createExpenseDTO.Comment);
             await _expenseRepository.InsertAsync(expense);
-        }
-
-        private void ValidateCreateExpenseDTO(CreateExpenseDTO createExpenseDTO)
-        {
-            if (createExpenseDTO == null)
-            {
-                throw new ArgumentNullException(nameof(createExpenseDTO));
-            }
-
-            if (createExpenseDTO.DateCreated > DateTime.Now)
-            {
-                throw new DateInFutureException($"{nameof(createExpenseDTO.DateCreated)} : {createExpenseDTO.DateCreated}, can not be in the futur");
-            }
-
-            if (createExpenseDTO.DateCreated < DateTime.Now.AddMonths(ExpenseConstant.MaxExpenseDate))
-            {
-                throw new DateTooOldException($"{nameof(createExpenseDTO.DateCreated)} : {createExpenseDTO.DateCreated}, can not be older than three months");
-            }
-
-            if (string.IsNullOrWhiteSpace(createExpenseDTO.Comment))
-            {
-                throw new CommentEmptyException($"{nameof(createExpenseDTO.Comment)} is required");
-            }
         }
     }
 }
