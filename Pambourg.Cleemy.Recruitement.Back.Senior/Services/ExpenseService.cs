@@ -144,14 +144,12 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Services
                 throw new InvalidCurrencyException($"{nameof(createExpenseDTO.CurrencyCode)} {createExpenseDTO.CurrencyCode}, must be the same as the currency of the userID {user.ID} : {user.Currency.Code}");
             }
 
-            if (user.Expenses.Where(e => e.DateCreated == createExpenseDTO.DateCreated // TODO See with product for 'same date' == day or dateTime?
-                && e.Amount == createExpenseDTO.Amount && e.Currency.ID == currency.ID).Any())
+            Expense expense = new Expense(user.ID, expenseType.ID, user.CurrencyID, createExpenseDTO.DateCreated, createExpenseDTO.Amount, createExpenseDTO.Comment)
             {
-                throw new AlreadyExistException($"An expense already exist with this date({createExpenseDTO.DateCreated}), amount({createExpenseDTO.Amount}) and currency({createExpenseDTO.CurrencyCode})");
-            }
+                User = user
+            };
+            expense.IsDuplicated();
 
-
-            Expense expense = new Expense(user.ID, expenseType.ID, user.CurrencyID, createExpenseDTO.DateCreated, createExpenseDTO.Amount, createExpenseDTO.Comment);
             await _expenseRepository.InsertAsync(expense);
         }
     }

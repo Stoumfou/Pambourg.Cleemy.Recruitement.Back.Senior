@@ -1,4 +1,4 @@
-﻿using Pambourg.Cleemy.Recruitement.Back.Senior.Services;
+﻿using Pambourg.Cleemy.Recruitement.Back.Senior.Exceptions.Expense;
 using System;
 using System.Linq;
 
@@ -20,23 +20,12 @@ namespace Pambourg.Cleemy.Recruitement.Back.Senior.Models.Entities
             Comment = comment;
         }
 
-        public bool IsValidDate()
+        public void IsDuplicated() // TODO See with product for 'same date' == day or dateTime?
         {
-            return DateCreated > DateTime.Now && DateCreated < DateTime.Now.AddMonths(ExpenseConstant.MaxExpenseDate);
-        }
-
-        public bool IsValid()
-        {
-            if (!IsValidDate()
-                || string.IsNullOrWhiteSpace(Comment)
-                || User.Expenses.FirstOrDefault(e => e.DateCreated == DateCreated && e.Amount == Amount) != null
-                || Currency != User.Currency)
+            if (User.Expenses.Where(e => e.DateCreated == DateCreated && e.Amount == Amount && User.CurrencyID == CurrencyID).Any())
             {
-                return false;
+                throw new AlreadyExistException($"An expense already exist with this date({DateCreated}), amount({Amount}) and currency({CurrencyID})");
             }
-
-            return true;
         }
-
     }
 }
